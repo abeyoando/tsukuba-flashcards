@@ -13,7 +13,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink)
 .deck-btn.active,.deck-btn:hover{background:var(--acc);color:#fff;border-color:var(--acc);}
 /* deck dropdown (mobile only) */
 .deck-select{display:none;padding:6px 12px;border-radius:8px;border:1px solid var(--rule);background:var(--card-bg);font-size:14px;font-family:'Noto Sans JP',sans-serif;color:var(--ink);cursor:pointer;flex-shrink:0;max-width:200px;}
-.deck-buttons{display:contents;}
+.deck-buttons{display:flex;gap:8px;flex-wrap:wrap;}
 .spacer{flex:1;}
 .mode-toggle{display:flex;border:1px solid var(--rule);border-radius:7px;overflow:hidden;}
 .mode-btn{padding:6px 14px;font-size:13px;cursor:pointer;border:none;background:var(--card-bg);font-family:'Noto Sans JP',sans-serif;color:var(--ink2);}
@@ -164,7 +164,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink)
   .controls{padding:6px 1rem;gap:5px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;}
   .filter-label{font-size:12px;}
   /* show dropdown, hide buttons */
-  .deck-select{display:block;font-size:13px;padding:5px 10px;flex:1;max-width:none;}
+  .deck-select{display:block;font-size:16px;padding:10px 14px;flex:1;max-width:none;border-radius:10px;}
   .deck-buttons{display:none;}
   .mode-btn{font-size:12px;padding:4px 10px;}
   .hist-nav{font-size:12px;padding:4px 10px;flex-shrink:0;}
