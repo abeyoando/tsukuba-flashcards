@@ -160,46 +160,50 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink)
   .app-header h1{font-size:14px;}
   .app-header p{font-size:11px;display:none;}
   .stat-pill{font-size:11px;padding:2px 8px;}
-  /* controls: horizontal scroll instead of wrap */
-  .controls{padding:6px 1rem;gap:5px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  .filter-label{font-size:12px;}
+  /* controls: stack vertically */
+  .controls{padding:8px 1rem;gap:6px;flex-wrap:wrap;}
+  .filter-label{font-size:13px;width:100%;} /* "デッキ：" on its own conceptual line before select */
   /* show dropdown, hide buttons */
-  .deck-select{display:block !important;font-size:16px;padding:10px 14px;flex:1;max-width:none;border-radius:10px;}
+  .deck-select{display:block !important;font-size:16px;padding:10px 14px;flex:1;max-width:none;border-radius:10px;width:100%;}
   .deck-buttons{display:none !important;}
-  .mode-btn{font-size:12px;padding:4px 10px;}
-  .hist-nav{font-size:12px;padding:4px 10px;flex-shrink:0;}
+  /* mode + history on separate row */
+  .mode-toggle{flex:none;}
+  .mode-btn{font-size:13px;padding:6px 16px;}
+  .hist-nav{font-size:13px;padding:6px 14px;flex-shrink:0;}
   .spacer{display:none;}
-  /* main area */
-  .app-main{padding:0.8rem 0.8rem;gap:10px;justify-content:flex-start;}
+  /* main area — fill remaining screen height */
+  .app-main{padding:0.6rem 0.8rem;gap:8px;justify-content:flex-start;flex:1;}
   /* progress */
   .progress-info{font-size:12px;margin-bottom:4px;}
   .progress-bar-outer{height:4px;}
-  /* card — no flip on mobile, show/hide instead */
-  .card-scene{perspective:none;}
-  .card-wrap{min-height:auto;transform-style:flat;transition:none;}
+  /* progress */
+  .progress-wrap{flex-shrink:0;}
+  /* card — no flip on mobile, show/hide instead; fill available space */
+  .card-scene{perspective:none;flex:1;display:flex;flex-direction:column;}
+  .card-wrap{min-height:auto;transform-style:flat;transition:none;flex:1;display:flex;flex-direction:column;}
   .card-wrap.flipped{transform:none;}
-  .card-face{position:relative;padding:1rem 1.1rem;backface-visibility:visible;-webkit-backface-visibility:visible;}
+  .card-face{position:relative;padding:1.2rem 1.2rem;backface-visibility:visible;-webkit-backface-visibility:visible;flex:1;justify-content:center;}
   .card-back{transform:none;display:none;}
   .card-wrap.flipped .card-front{display:none;}
   .card-wrap.flipped .card-back{display:flex;}
-  .card-term{font-size:20px;}
-  .card-kata{font-size:13px;}
-  .speak-btn{font-size:13px;padding:3px 10px;}
-  .card-hint{font-size:12px;margin-top:2px;}
-  .card-def{font-size:16px;margin-bottom:6px;}
-  .card-ex{font-size:13px;margin-bottom:6px;}
-  .card-category{font-size:11px;margin-bottom:4px;}
-  .back-speak{font-size:13px;padding:3px 10px;}
-  .gsearch-submit{font-size:12px;padding:3px 10px;}
-  .deriv-tag{font-size:11px;padding:1px 6px;}
-  .deriv-words{font-size:13px;line-height:1.6;}
-  .sibling-note{font-size:12px;}
-  .sibling-back{font-size:13px;}
-  /* actions */
-  .action-row{gap:6px;}
-  .act-btn{padding:10px 4px;font-size:14px;border-radius:8px;}
-  .act-btn small{font-size:11px;}
+  .card-term{font-size:22px;}
+  .card-kata{font-size:14px;}
+  .speak-btn{font-size:14px;padding:4px 12px;}
+  .card-hint{font-size:13px;margin-top:4px;}
+  .card-def{font-size:17px;margin-bottom:6px;}
+  .card-ex{font-size:14px;margin-bottom:6px;}
+  .card-category{font-size:12px;margin-bottom:4px;}
+  .back-speak{font-size:14px;padding:4px 12px;}
+  .gsearch-submit{font-size:13px;padding:4px 12px;}
+  .deriv-tag{font-size:12px;padding:2px 7px;}
+  .deriv-words{font-size:14px;line-height:1.6;}
+  .sibling-note{font-size:13px;}
+  .sibling-back{font-size:14px;}
+  /* actions — fixed at bottom */
+  .action-row{gap:6px;flex-shrink:0;}
+  .act-btn{padding:12px 4px;font-size:15px;border-radius:8px;}
+  .act-btn small{font-size:12px;}
   /* nav */
-  .nav-row{gap:6px;}
-  .nav-btn,.shuffle-btn{font-size:13px;padding:7px 14px;}
+  .nav-row{gap:6px;flex-shrink:0;}
+  .nav-btn,.shuffle-btn{font-size:14px;padding:8px 16px;}
 }
