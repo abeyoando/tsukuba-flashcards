@@ -164,8 +164,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink)
   .controls{padding:6px 1rem;gap:5px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;}
   .filter-label{font-size:12px;}
   /* show dropdown, hide buttons */
-  .deck-select{display:block;font-size:16px;padding:10px 14px;flex:1;max-width:none;border-radius:10px;}
-  .deck-buttons{display:none;}
+  .deck-select{display:block !important;font-size:16px;padding:10px 14px;flex:1;max-width:none;border-radius:10px;}
+  .deck-buttons{display:none !important;}
   .mode-btn{font-size:12px;padding:4px 10px;}
   .hist-nav{font-size:12px;padding:4px 10px;flex-shrink:0;}
   .spacer{display:none;}
