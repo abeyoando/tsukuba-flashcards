@@ -146,4 +146,55 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink)
 .login-google-btn svg{flex-shrink:0;background:#fff;border-radius:4px;padding:2px;}
 .login-note{font-size:11px;color:var(--ink3);margin-top:16px;line-height:1.6;}
 .sync-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:rgba(255,255,255,.6);background:rgba(255,255,255,.08);padding:2px 8px;border-radius:99px;}
-@media(max-width:480px){.card-term{font-size:20px;}.card-def{font-size:16px;}.act-btn{font-size:14px;padding:10px 4px;}.controls{gap:5px;}}
+/* ===== Mobile compact ===== */
+@media(max-width:600px){
+  /* auth bar */
+  .auth-bar{padding:4px 1rem;gap:6px;}
+  .auth-name{font-size:12px;}
+  .auth-btn{font-size:12px;padding:4px 12px;}
+  /* header: single row, smaller */
+  .app-header{padding:6px 1rem;gap:4px;}
+  .app-header h1{font-size:14px;}
+  .app-header p{font-size:11px;display:none;}
+  .stat-pill{font-size:11px;padding:2px 8px;}
+  /* controls: horizontal scroll instead of wrap */
+  .controls{padding:6px 1rem;gap:5px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .filter-label{font-size:12px;}
+  .deck-btn{font-size:12px;padding:4px 10px;flex-shrink:0;}
+  .mode-btn{font-size:12px;padding:4px 10px;}
+  .hist-nav{font-size:12px;padding:4px 10px;flex-shrink:0;}
+  .spacer{display:none;}
+  /* main area */
+  .app-main{padding:0.8rem 0.8rem;gap:10px;justify-content:flex-start;}
+  /* progress */
+  .progress-info{font-size:12px;margin-bottom:4px;}
+  .progress-bar-outer{height:4px;}
+  /* card — no flip on mobile, show/hide instead */
+  .card-scene{perspective:none;}
+  .card-wrap{min-height:auto;transform-style:flat;transition:none;}
+  .card-wrap.flipped{transform:none;}
+  .card-face{position:relative;padding:1rem 1.1rem;backface-visibility:visible;-webkit-backface-visibility:visible;}
+  .card-back{transform:none;display:none;}
+  .card-wrap.flipped .card-front{display:none;}
+  .card-wrap.flipped .card-back{display:flex;}
+  .card-term{font-size:20px;}
+  .card-kata{font-size:13px;}
+  .speak-btn{font-size:13px;padding:3px 10px;}
+  .card-hint{font-size:12px;margin-top:2px;}
+  .card-def{font-size:16px;margin-bottom:6px;}
+  .card-ex{font-size:13px;margin-bottom:6px;}
+  .card-category{font-size:11px;margin-bottom:4px;}
+  .back-speak{font-size:13px;padding:3px 10px;}
+  .gsearch-submit{font-size:12px;padding:3px 10px;}
+  .deriv-tag{font-size:11px;padding:1px 6px;}
+  .deriv-words{font-size:13px;line-height:1.6;}
+  .sibling-note{font-size:12px;}
+  .sibling-back{font-size:13px;}
+  /* actions */
+  .action-row{gap:6px;}
+  .act-btn{padding:10px 4px;font-size:14px;border-radius:8px;}
+  .act-btn small{font-size:11px;}
+  /* nav */
+  .nav-row{gap:6px;}
+  .nav-btn,.shuffle-btn{font-size:13px;padding:7px 14px;}
+}
