@@ -83,14 +83,26 @@ onAuthStateChanged(auth,(user)=>{
 </header>
 <div class="controls">
   <span class="filter-label">デッキ：</span>
-  <button class="deck-btn active" data-deck="all"       onclick="selectDeck('all',this)">全て</button>
-  <button class="deck-btn"        data-deck="basics"    onclick="selectDeck('basics',this)">基礎</button>
-  <button class="deck-btn"        data-deck="immune"    onclick="selectDeck('immune',this)">免疫</button>
-  <button class="deck-btn"        data-deck="neuro"     onclick="selectDeck('neuro',this)">神経</button>
-  <button class="deck-btn"        data-deck="cart"      onclick="selectDeck('cart',this)">CAR-T</button>
-  <button class="deck-btn"        data-deck="mnp"       onclick="selectDeck('mnp',this)">MNP</button>
-  <button class="deck-btn"        data-deck="evolution" onclick="selectDeck('evolution',this)">進化</button>
-  <button class="deck-btn"        data-deck="paper"     onclick="selectDeck('paper',this)">論文</button>
+  <select class="deck-select" id="deck-select" onchange="selectDeckFromDropdown(this)">
+    <option value="all">全て</option>
+    <option value="basics">基礎・汎用</option>
+    <option value="immune">免疫学</option>
+    <option value="neuro">神経科学</option>
+    <option value="cart">CAR-T</option>
+    <option value="mnp">MNP・環境医学</option>
+    <option value="evolution">進化・遺伝</option>
+    <option value="paper">論文表現</option>
+  </select>
+  <div class="deck-buttons">
+    <button class="deck-btn active" data-deck="all"       onclick="selectDeck('all',this)">全て</button>
+    <button class="deck-btn"        data-deck="basics"    onclick="selectDeck('basics',this)">基礎</button>
+    <button class="deck-btn"        data-deck="immune"    onclick="selectDeck('immune',this)">免疫</button>
+    <button class="deck-btn"        data-deck="neuro"     onclick="selectDeck('neuro',this)">神経</button>
+    <button class="deck-btn"        data-deck="cart"      onclick="selectDeck('cart',this)">CAR-T</button>
+    <button class="deck-btn"        data-deck="mnp"       onclick="selectDeck('mnp',this)">MNP</button>
+    <button class="deck-btn"        data-deck="evolution" onclick="selectDeck('evolution',this)">進化</button>
+    <button class="deck-btn"        data-deck="paper"     onclick="selectDeck('paper',this)">論文</button>
+  </div>
   <div class="spacer"></div>
   <div class="mode-toggle">
     <button class="mode-btn active" onclick="setMode('flash',this)">カード</button>
@@ -217,6 +229,10 @@ function updateDeckCounts(){
     const d=btn.getAttribute('data-deck');
     btn.textContent=(DECK_LABELS[d]||d)+' ('+getCount(d)+')';
   });
+  document.querySelectorAll('#deck-select option').forEach(opt=>{
+    const d=opt.value;
+    opt.textContent=(DECK_LABELS[d]||d)+' ('+getCount(d)+')';
+  });
 }
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
 function updateStats(){
@@ -228,6 +244,15 @@ function selectDeck(deck,btn){
   currentDeck=deck;
   document.querySelectorAll('.deck-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  document.getElementById('deck-select').value=deck;
+  initDeck();
+}
+function selectDeckFromDropdown(sel){
+  const deck=sel.value;
+  currentDeck=deck;
+  document.querySelectorAll('.deck-btn').forEach(b=>{
+    b.classList.toggle('active',b.getAttribute('data-deck')===deck);
+  });
   initDeck();
 }
 function setMode(mode,btn){
