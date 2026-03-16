@@ -173,20 +173,16 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink)
   .hist-nav{font-size:13px;padding:6px 14px;flex-shrink:0;}
   .spacer{display:none;}
   /* main area — fill remaining screen height */
-  .app-main{padding:0.6rem 0.8rem;gap:8px;justify-content:flex-start;flex:1;min-height:0;overflow:hidden;}
+  .app-main{padding:0.6rem 0.8rem;gap:8px;justify-content:flex-start;flex:1;min-height:0;}
   /* progress */
   .progress-info{font-size:12px;margin-bottom:4px;}
   .progress-bar-outer{height:4px;}
   /* progress */
   .progress-wrap{flex-shrink:0;}
-  /* card — no flip on mobile, show/hide instead; fill available space */
-  .card-scene{perspective:none;flex:1;display:flex;flex-direction:column;}
-  .card-wrap{min-height:auto;transform-style:flat;transition:none;flex:1;display:flex;flex-direction:column;}
-  .card-wrap.flipped{transform:none;}
-  .card-face{position:relative;padding:1.2rem 1.2rem;backface-visibility:visible;-webkit-backface-visibility:visible;flex:1;justify-content:center;}
-  .card-back{transform:none;display:none;}
-  .card-wrap.flipped .card-front{display:none;}
-  .card-wrap.flipped .card-back{display:flex;}
+  /* card — keep flip animation, fill available space */
+  .card-scene{flex:1;display:flex;flex-direction:column;perspective:800px;}
+  .card-wrap{flex:1;min-height:auto;}
+  /* card faces: position:absolute + inset:0 fills the card-wrap */
   .card-term{font-size:22px;}
   .card-kata{font-size:14px;}
   .speak-btn{font-size:14px;padding:4px 12px;}
