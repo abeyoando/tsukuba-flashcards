@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import{getAuth,signInWithPopup,signOut,GoogleAuthProvider,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import{getAuth,signInWithPopup,signInWithRedirect,getRedirectResult,signOut,GoogleAuthProvider,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import{getFirestore,doc,getDoc,setDoc}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 // ===== Firebase Config (placeholder — will be replaced after project creation) =====
@@ -23,10 +23,14 @@ window._fbAuth=auth;
 window._fbDb=db;
 window._fbProvider=provider;
 window._fbSignInWithPopup=signInWithPopup;
+window._fbSignInWithRedirect=signInWithRedirect;
 window._fbSignOut=signOut;
 window._fbDoc=doc;
 window._fbGetDoc=getDoc;
 window._fbSetDoc=setDoc;
+
+// Handle redirect result (for mobile)
+getRedirectResult(auth).catch(e=>console.error('Redirect error:',e.message));
 
 // Auth state listener
 onAuthStateChanged(auth,(user)=>{
@@ -48,7 +52,7 @@ onAuthStateChanged(auth,(user)=>{
   }
 });
 </script>
-<link rel="stylesheet" href="style.css?v=17">
+<link rel="stylesheet" href="style.css?v=18">
 </head>
 <body>
 <div class="login-screen" id="login-screen">
@@ -136,7 +140,16 @@ function speak(text,btn){
 // Auth helpers
 function fbLogin(){
   if(!window._fbAuth||!window._fbProvider)return;
-  window._fbSignInWithPopup(window._fbAuth,window._fbProvider).catch(e=>alert('ログインエラー: '+e.message));
+  const isMobile=/iPhone|iPad|Android/i.test(navigator.userAgent);
+  if(isMobile){
+    window._fbSignInWithRedirect(window._fbAuth,window._fbProvider);
+  }else{
+    window._fbSignInWithPopup(window._fbAuth,window._fbProvider).catch(e=>{
+      if(e.code==='auth/popup-blocked'){
+        window._fbSignInWithRedirect(window._fbAuth,window._fbProvider);
+      }else{alert('ログインエラー: '+e.message);}
+    });
+  }
 }
 function fbLogout(){
   if(!window._fbAuth)return;
