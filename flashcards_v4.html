@@ -30,11 +30,19 @@ window._fbGetDoc=getDoc;
 window._fbSetDoc=setDoc;
 
 // Handle redirect result (for mobile)
-getRedirectResult(auth).catch(e=>console.error('Redirect error:',e.message));
+getRedirectResult(auth).then(result=>{
+  if(result&&result.user){
+    console.log('Redirect login success:',result.user.displayName);
+  }
+}).catch(e=>{
+  alert('リダイレクトログインエラー: '+e.code+' '+e.message);
+});
 
 // Auth state listener
 onAuthStateChanged(auth,(user)=>{
   window._fbUser=user;
+  const evt=new CustomEvent('authReady',{detail:{user}});
+  document.dispatchEvent(evt);
   const authBar=document.getElementById('auth-bar');
   const appWrap=document.getElementById('app-wrap');
   if(user){
@@ -42,7 +50,6 @@ onAuthStateChanged(auth,(user)=>{
     authBar.innerHTML=`<span class="auth-name">${user.displayName||user.email}</span><button class="auth-btn" onclick="fbLogout()">ログアウト</button>`;
     document.getElementById('login-screen').style.display='none';
     appWrap.style.display='';
-    // Load history from Firestore
     window.loadHistoryFromCloud&&window.loadHistoryFromCloud();
   }else{
     authBar.innerHTML='';
@@ -52,7 +59,7 @@ onAuthStateChanged(auth,(user)=>{
   }
 });
 </script>
-<link rel="stylesheet" href="style.css?v=18">
+<link rel="stylesheet" href="style.css?v=19">
 </head>
 <body>
 <div class="login-screen" id="login-screen">
