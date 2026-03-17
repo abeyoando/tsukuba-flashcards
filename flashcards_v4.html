@@ -48,7 +48,7 @@ onAuthStateChanged(auth,(user)=>{
   }
 });
 </script>
-<link rel="stylesheet" href="style.css?v=12">
+<link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
 <div class="login-screen" id="login-screen">
@@ -208,16 +208,27 @@ async function saveHistoryToCloud(){
 }
 
 history=loadHistory();
-function recordResult(){
+let _sessionId=null;
+function recordAnswer(result){
   const tot=stats.ok+stats.again;if(!tot)return;
   const pct=Math.round(stats.ok/tot*100);
   const now=new Date();
-  history.unshift({id:now.getTime(),deck:currentDeck,deckLabel:DECK_LABELS[currentDeck],total:tot,ok:stats.ok,again:stats.again,pct,
-    date:now.toLocaleDateString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit'}),
-    time:now.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})});
+  if(!_sessionId)_sessionId=now.getTime();
+  // Update existing session record or create new one
+  const existing=history.find(h=>h.id===_sessionId);
+  if(existing){
+    existing.total=tot;existing.ok=stats.ok;existing.again=stats.again;existing.pct=pct;
+    existing.time=now.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
+    existing.completed=idx>=cards.length;
+  }else{
+    history.unshift({id:_sessionId,deck:currentDeck,deckLabel:DECK_LABELS[currentDeck],total:tot,ok:stats.ok,again:stats.again,pct,
+      date:now.toLocaleDateString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit'}),
+      time:now.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}),completed:false});
+  }
   if(history.length>100)history=history.slice(0,100);
   saveHistory();
 }
+function recordResult(){recordAnswer('complete');}
 function deleteHist(id){history=history.filter(h=>h.id!==id);saveHistory();renderHistory(document.getElementById('app-main'));}
 function clearAllHist(){if(!confirm('全ての記録を削除しますか？'))return;history=[];saveHistory();renderHistory(document.getElementById('app-main'));}
 </script>
@@ -284,7 +295,7 @@ function setMode(mode,btn){
 }
 function initDeck(){
   cards=expandCards(currentDeck==='all'?[...C]:C.filter(c=>c.d===currentDeck));
-  shuffle(cards);idx=0;flipped=false;stats={ok:0,again:0};updateStats();render();
+  shuffle(cards);idx=0;flipped=false;stats={ok:0,again:0};_sessionId=null;updateStats();render();
 }
 function render(){if(currentMode==='list')renderList(document.getElementById('app-main'));else renderFlash(document.getElementById('app-main'));}
 
@@ -374,7 +385,7 @@ function renderFlash(main){
 
 function speakFront(){if(idx>=cards.length)return;const text=cards[idx].en.split('/')[0].trim();speak(text,document.getElementById('sf'));}
 function flipCard(){const cw=document.getElementById('cw');if(!cw)return;flipped=!flipped;cw.classList.toggle('flipped',flipped);if(flipped)document.getElementById('ar').style.display='flex';}
-function rate(r){if(r==='again'){stats.again++;cards.push(cards[idx]);}else{stats.ok++;}idx++;flipped=false;render();}
+function rate(r){if(r==='again'){stats.again++;cards.push(cards[idx]);}else{stats.ok++;}recordAnswer(r);idx++;flipped=false;render();}
 function skip(){idx++;flipped=false;render();}
 function prev(){if(idx>0){idx--;flipped=false;render();}}
 function reshuffleAll(){initDeck();}
