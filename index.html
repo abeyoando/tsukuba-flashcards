@@ -60,7 +60,7 @@ onAuthStateChanged(auth,(user)=>{
   }
 });
 </script>
-<link rel="stylesheet" href="style.css?v=20">
+<link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
 <div class="login-screen" id="login-screen">
@@ -148,16 +148,15 @@ function speak(text,btn){
 // Auth helpers
 function fbLogin(){
   if(!window._fbAuth||!window._fbProvider)return;
-  const isMobile=/iPhone|iPad|Android/i.test(navigator.userAgent);
-  if(isMobile){
-    window._fbSignInWithRedirect(window._fbAuth,window._fbProvider,window._fbResolver);
-  }else{
-    window._fbSignInWithPopup(window._fbAuth,window._fbProvider,window._fbResolver).catch(e=>{
-      if(e.code==='auth/popup-blocked'){
-        window._fbSignInWithRedirect(window._fbAuth,window._fbProvider,window._fbResolver);
-      }else{alert('ログインエラー: '+e.message);}
-    });
-  }
+  window._fbSignInWithPopup(window._fbAuth,window._fbProvider).catch(e=>{
+    if(e.code==='auth/popup-blocked'){
+      // Show instructions for enabling popups
+      const msg=navigator.userAgent.match(/iPhone|iPad/i)
+        ?'ポップアップがブロックされました。\n\niPhoneの場合：\n設定 → Safari → ポップアップブロック をオフにしてから再度お試しください。'
+        :'ポップアップがブロックされました。\n\nブラウザの設定でポップアップを許可してから再度お試しください。';
+      alert(msg);
+    }else{alert('ログインエラー: '+e.message);}
+  });
 }
 function fbLogout(){
   if(!window._fbAuth)return;
