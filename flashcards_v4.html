@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import{getAuth,signInWithPopup,signInWithRedirect,getRedirectResult,signOut,GoogleAuthProvider,onAuthStateChanged,browserPopupRedirectResolver,browserSessionPersistence,setPersistence}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import{getAuth,signInWithPopup,signOut,GoogleAuthProvider,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import{getFirestore,doc,getDoc,setDoc}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 // ===== Firebase Config (placeholder — will be replaced after project creation) =====
@@ -23,22 +23,12 @@ window._fbAuth=auth;
 window._fbDb=db;
 window._fbProvider=provider;
 window._fbSignInWithPopup=signInWithPopup;
-window._fbSignInWithRedirect=signInWithRedirect;
-window._fbResolver=browserPopupRedirectResolver;
 window._fbSignOut=signOut;
 window._fbDoc=doc;
 window._fbGetDoc=getDoc;
 window._fbSetDoc=setDoc;
 
 // Handle redirect result (for mobile)
-getRedirectResult(auth,browserPopupRedirectResolver).then(result=>{
-  if(result&&result.user){
-    console.log('Redirect login success:',result.user.displayName);
-  }
-}).catch(e=>{
-  alert('リダイレクトログインエラー: '+e.code+' '+e.message);
-});
-
 // Auth state listener
 onAuthStateChanged(auth,(user)=>{
   window._fbUser=user;
@@ -60,7 +50,7 @@ onAuthStateChanged(auth,(user)=>{
   }
 });
 </script>
-<link rel="stylesheet" href="style.css?v=22">
+<link rel="stylesheet" href="style.css?v=27">
 </head>
 <body>
 <div class="login-screen" id="login-screen">
@@ -150,12 +140,10 @@ function fbLogin(){
   if(!window._fbAuth||!window._fbProvider)return;
   window._fbSignInWithPopup(window._fbAuth,window._fbProvider).catch(e=>{
     if(e.code==='auth/popup-blocked'){
-      // Show instructions for enabling popups
-      const msg=navigator.userAgent.match(/iPhone|iPad/i)
-        ?'ポップアップがブロックされました。\n\niPhoneの場合：\n設定 → Safari → ポップアップブロック をオフにしてから再度お試しください。'
-        :'ポップアップがブロックされました。\n\nブラウザの設定でポップアップを許可してから再度お試しください。';
-      alert(msg);
-    }else{alert('ログインエラー: '+e.message);}
+      alert('ポップアップがブロックされました。\n\nSafariの場合：\n設定アプリ → Safari → 「ポップアップブロック」をオフにしてください。\n\nその後、このページに戻って再度ログインしてください。');
+    }else if(e.code!=='auth/popup-closed-by-user'){
+      alert('ログインエラー: '+e.message);
+    }
   });
 }
 function fbLogout(){
