@@ -48,7 +48,7 @@ onAuthStateChanged(auth,(user)=>{
   }
 });
 </script>
-<link rel="stylesheet" href="style.css?v=16">
+<link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
 <div class="login-screen" id="login-screen">
@@ -148,8 +148,19 @@ let history=[];
 let _saving=false;
 let _cloudLoaded=false;
 
+// Clear old localStorage data
+try{localStorage.removeItem('fc-history');}catch(e){}
+
 function saveHistory(){
   saveHistoryToCloud();
+}
+
+// Brief save indicator
+function showSaveIndicator(){
+  let el=document.getElementById('save-indicator');
+  if(!el){el=document.createElement('div');el.id='save-indicator';el.style.cssText='position:fixed;top:10px;right:10px;background:#27ae60;color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;';document.body.appendChild(el);}
+  el.textContent='保存済み ✓';el.style.opacity='1';
+  clearTimeout(el._t);el._t=setTimeout(()=>{el.style.opacity='0';},1500);
 }
 
 async function loadHistoryFromCloud(){
@@ -162,6 +173,8 @@ async function loadHistoryFromCloud(){
     const snap=await window._fbGetDoc(ref);
     if(snap.exists()){
       history=snap.data().records||[];
+      // Filter out broken records with 0 values from old testing
+      history=history.filter(h=>h.total>0);
     }
   }catch(e){console.error('loadCloud ERROR:',e.message);_cloudLoaded=false;}
   if(typeof currentMode!=='undefined'&&currentMode==='history'){
@@ -178,6 +191,7 @@ async function saveHistoryToCloud(){
   try{
     const ref=window._fbDoc(window._fbDb,'flashcard_history',user.uid);
     await window._fbSetDoc(ref,{records:history,updatedAt:new Date().toISOString()},{merge:true});
+    showSaveIndicator();
   }catch(e){console.error('saveCloud ERROR:',e.message);}
   _saving=false;
 }
@@ -187,7 +201,6 @@ function recordAnswer(result){
   const pct=Math.round(stats.ok/tot*100);
   const now=new Date();
   if(!_sessionId)_sessionId=now.getTime();
-  // Update existing session record or create new one
   const existing=history.find(h=>h.id===_sessionId);
   if(existing){
     existing.total=tot;existing.ok=stats.ok;existing.again=stats.again;existing.pct=pct;
@@ -435,7 +448,7 @@ function renderHistory(main){
       </div>
       ${history.length?`<button class="hist-clear" onclick="clearAllHist()">🗑 全削除</button>`:''}
     </div>`;
-  if(!history.length){html+=`<div class="hist-empty">まだ記録がありません。<br>デッキを完了すると自動保存されます。</div>`;}
+  if(!history.length){html+=`<div class="hist-empty">まだ記録がありません。<br>カードに解答すると自動的に記録されます。</div>`;}
   else{history.forEach(h=>{
     const col=h.pct>=80?'var(--green)':h.pct>=60?'var(--amber)':'var(--red)';
     html+=`<div class="hist-item">
