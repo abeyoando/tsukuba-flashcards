@@ -48,7 +48,7 @@ onAuthStateChanged(auth,(user)=>{
   }
 });
 </script>
-<link rel="stylesheet" href="style.css?v=11">
+<link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
 <div class="login-screen" id="login-screen">
@@ -147,6 +147,7 @@ function fbLogout(){
 const HIST_KEY='fc-history';
 let history=[];
 let _saving=false;
+let _cloudLoaded=false;
 
 function loadHistory(){
   try{const r=localStorage.getItem(HIST_KEY);return r?JSON.parse(r):[];}catch(e){return[];}
@@ -164,9 +165,11 @@ function _dbg(msg){
 }
 
 async function loadHistoryFromCloud(){
+  if(_cloudLoaded){_dbg('loadCloud: already loaded, skip');return;}
   const user=window._fbUser;
   _dbg('loadCloud: user='+(user?user.uid:'null')+' db='+(window._fbDb?'ok':'null'));
   if(!user||!window._fbDb)return;
+  _cloudLoaded=true;
   try{
     const ref=window._fbDoc(window._fbDb,'flashcard_history',user.uid);
     _dbg('loadCloud: getDoc...');
@@ -174,14 +177,14 @@ async function loadHistoryFromCloud(){
     _dbg('loadCloud: exists='+snap.exists());
     if(snap.exists()){
       history=snap.data().records||[];
-      _dbg('loadCloud: loaded '+history.length+' records');
+      _dbg('loadCloud: loaded '+history.length+' records from cloud');
       localStorage.setItem(HIST_KEY,JSON.stringify(history));
     }else{
       history=loadHistory();
       _dbg('loadCloud: no cloud data, local='+history.length);
       if(history.length)saveHistoryToCloud();
     }
-  }catch(e){_dbg('loadCloud ERROR: '+e.message);history=loadHistory();}
+  }catch(e){_dbg('loadCloud ERROR: '+e.message);history=loadHistory();_cloudLoaded=false;}
   if(typeof currentMode!=='undefined'&&currentMode==='history'){
     renderHistory(document.getElementById('app-main'));
   }
@@ -191,13 +194,15 @@ window.loadHistoryFromCloud=loadHistoryFromCloud;
 
 async function saveHistoryToCloud(){
   const user=window._fbUser;
-  _dbg('saveCloud: user='+(user?user.uid:'null')+' db='+(window._fbDb?'ok':'null')+' saving='+_saving+' records='+history.length);
-  if(!user||!window._fbDb||_saving)return;
+  _dbg('saveCloud: start user='+(user?user.uid:'null')+' db='+(window._fbDb?'ok':'null')+' saving='+_saving+' records='+history.length);
+  if(!user||!window._fbDb)return;
+  if(_saving){_dbg('saveCloud: already saving, skip');return;}
   _saving=true;
   try{
     const ref=window._fbDoc(window._fbDb,'flashcard_history',user.uid);
+    _dbg('saveCloud: calling setDoc...');
     await window._fbSetDoc(ref,{records:history,updatedAt:new Date().toISOString()},{merge:true});
-    _dbg('saveCloud: SUCCESS');
+    _dbg('saveCloud: SUCCESS ✓');
   }catch(e){_dbg('saveCloud ERROR: '+e.message);}
   _saving=false;
 }
