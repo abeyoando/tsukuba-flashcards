@@ -48,7 +48,7 @@ onAuthStateChanged(auth,(user)=>{
   }
 });
 </script>
-<link rel="stylesheet" href="style.css?v=14">
+<link rel="stylesheet" href="style.css?v=15">
 </head>
 <body>
 <div class="login-screen" id="login-screen">
@@ -157,7 +157,12 @@ function saveHistory(){
   saveHistoryToCloud();
 }
 
-function _dbg(msg){console.log('[FC-DEBUG]',msg);}
+function _dbg(msg){
+  console.log('[FC-DEBUG]',msg);
+  let el=document.getElementById('dbg-log');
+  if(!el){el=document.createElement('div');el.id='dbg-log';el.style.cssText='position:fixed;bottom:0;left:0;right:0;background:#111;color:#0f0;font-size:11px;font-family:monospace;padding:6px 10px;max-height:120px;overflow-y:auto;z-index:9999;';document.body.appendChild(el);}
+  el.innerHTML+=msg+'<br>';el.scrollTop=el.scrollHeight;
+}
 
 async function loadHistoryFromCloud(){
   if(_cloudLoaded){_dbg('loadCloud: already loaded, skip');return;}
